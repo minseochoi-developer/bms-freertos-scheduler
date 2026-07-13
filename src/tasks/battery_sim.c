@@ -30,8 +30,8 @@ void BMS_SimReadBatteryData(BatteryData_t *pxOut)
     int32_t baseVoltage = CELL_VOLTAGE_NORMAL_MAX_MV - (int32_t)((CELL_VOLTAGE_NORMAL_MAX_MV - CELL_VOLTAGE_NORMAL_MIN_MV) * ulCycle / 20000u);
 
     for (int i = 0; i < BMS_NUM_CELLS; i++) {
-        int32_t Noise = (int32_t)(prvNextRand() % 31u) - 15;
-        int32_t voltage = baseVoltage + Noise;
+        int32_t Noise_v = (int32_t)(prvNextRand() % 31u) - 15;
+        int32_t voltage = baseVoltage + Noise_v;
 
         if ((prvNextRand() % 100u) == 0u) {
             voltage = CELL_VOLTAGE_FAULT_HIGH_MV + 10;
@@ -40,25 +40,30 @@ void BMS_SimReadBatteryData(BatteryData_t *pxOut)
         }
 
         pxOut->cell_voltage_mv[i] = (uint16_t)voltage;
+
+        int32_t Noise_t = (int32_t)(prvNextRand() % 21u) - 10;
+        int32_t temp = TEMPERATURE_NORMAL_MIN_C10 + (int32_t)((TEMPERATURE_NORMAL_MAX_C10 - TEMPERATURE_NORMAL_MIN_C10) * ulCycle / 20000u);
+        temp += Noise_t;
+
+        if ((prvNextRand() % 200u) == 0u)
+        {
+            temp = TEMPERATURE_FAULT_MAX_C10 + 20;
+        }
+        else if ((prvNextRand() % 200u) == 0u)
+        {
+            temp = TEMPERATURE_FAULT_MIN_C10 - 20;
+        }
+
+        pxOut->cell_temperature_c10[i] = (int16_t)temp;
     }
 
+    int32_t Noise_c = (int32_t)(prvNextRand() % 101u) - 50;
     int32_t current = (ulCycle < 10000u) ? -(int32_t)(PACK_CURRENT_NORMAL_MAX_MA * 8 / 10) : (int32_t)(PACK_CURRENT_NORMAL_MAX_MA * 5 / 10);
-    current += (int32_t)(prvNextRand() % 101u) - 50;
+    current += Noise_c;
+
     if ((prvNextRand() % 100u) == 0u) {
         int32_t sign = (ulCycle < 10000u) ? -1 : 1;
         current = sign * (PACK_CURRENT_FAULT_MAX_MA + 200);
     }
-    pxOut->pack_current_ma = (int16_t) current;
-
-    int32_t temp = TEMPERATURE_NORMAL_MIN_C10 + (int32_t)((TEMPERATURE_NORMAL_MAX_C10 - TEMPERATURE_NORMAL_MIN_C10) * ulCycle / 20000u);
-    temp += (int32_t)(prvNextRand() % 21u) - 10;
-
-    if ((prvNextRand() % 200u) == 0u) {
-        temp = TEMPERATURE_FAULT_MAX_C10 + 20;
-    } else if ((prvNextRand() % 200u) == 0u) {
-        temp = TEMPERATURE_FAULT_MIN_C10 - 20;
-    }
-    pxOut->pack_temperature_c10 = (int16_t) temp;
- 
-    ulDischargeStep++;
+    pxOut->pack_current_ma = (int16_t)current;
 }

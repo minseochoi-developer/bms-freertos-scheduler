@@ -16,12 +16,18 @@
  /* --- 셀 구성 --------------------------------------------------------------------------------- */
  #define BMS_NUM_CELLS 3
 
+ /* BatteryData는 FaultDiag가 추세(이동평균/변화율) 판단에 쓸 수 있게 히스토리를 유지하는 큐로 감 */
+ #define QUEUE_LEN_BATTERY_DATA 5
+ #define QUEUE_LEN_FAULT_STATE 1
+ #define QUEUE_LEN_SYSTEM_STATE 1
+ #define QUEUE_LEN_RELAY_COMMAND 1
+
  /* --- 메시지 타입 --------------------------------------------------------------------------------- */
  typedef struct {
      uint32_t timestamp_ms;
      uint16_t cell_voltage_mv[BMS_NUM_CELLS];
      int16_t pack_current_ma;
-     int16_t pack_temperature_c10;
+     int16_t cell_temperature_c10[BMS_NUM_CELLS];
  } BatteryData_t;
 
  /* FaultDiag -> StateMachine */
@@ -56,6 +62,8 @@ typedef enum {
 typedef struct {
     uint32_t timestamp_ms;
     BMSState_t state;
+    uint32_t warn_flags;
+    uint32_t fault_flags;
 } SystemState_t;
 
 /* RelayDecision -> CANTx */

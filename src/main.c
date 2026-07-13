@@ -9,11 +9,10 @@
 #include "queue.h"
 #include "bms_types.h"
 
-
 void vBatteryMeasTask(void *pvParameters);
 void vFaultDiagTask(void *pvParameters);
-/*
 void vStateMachineTask(void *pvParameters);
+/*
 void vRelayDecisionTask(void *pvParameters);
 void vCANTxTask(void *pvParameters);
 void vSysMonitorTask(void *pvParameters);
@@ -24,12 +23,6 @@ QueueHandle_t xQueueBatteryData = NULL;
 QueueHandle_t xQueueFaultState = NULL;
 QueueHandle_t xQueueSystemState = NULL;
 QueueHandle_t xQueueRelayCommand = NULL;
-
-/* BatteryData는 FaultDiag가 추세(이동평균/변화율) 판단에 쓸 수 있게 히스토리를 유지하는 큐로 감 */
-#define QUEUE_LEN_BATTERY_DATA 5
-#define QUEUE_LEN_FAULT_STATE 1
-#define QUEUE_LEN_SYSTEM_STATE 1
-#define QUEUE_LEN_RELAY_COMMAND 1
 
 static void prvCreateQueues(void) {
     xQueueBatteryData = xQueueCreate(QUEUE_LEN_BATTERY_DATA, sizeof(BatteryData_t));
@@ -48,8 +41,9 @@ int main(void)
 {
     prvCreateQueues();
     
-    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 1, NULL);
-    xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 2, NULL);
+    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 3, NULL);
+    xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 1, NULL);
+    xTaskCreate(vStateMachineTask, "StateMachine", 256, NULL, 2, NULL);
 
     vTaskStartScheduler();
 
