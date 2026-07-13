@@ -1,0 +1,7 @@
+build/
+*.o
+*.obj
+*.out
+*.bin
+*.map
+.DS_Store
