@@ -6,6 +6,8 @@
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
+#include "bms_types.h"
 
 /*
 void vBatteryMeasTask(void *pvParameters);
@@ -16,8 +18,35 @@ void vCANTxTask(void *pvParameters);
 void vSysMonitorTask(void *pvParameters);
 */
 
+/* bms_types.h에서 extern으로 선언된 큐 핸들의 실제 정의 */
+QueueHandle_t xQueueBatteryData = NULL;
+QueueHandle_t xQueueFaultState = NULL;
+QueueHandle_t xQueueSystemState = NULL;
+QueueHandle_t xQueueRelayCommand = NULL;
+
+/* BatteryData는 FaultDiag가 추세(이동평균/변화율) 판단에 쓸 수 있게 히스토리를 유지하는 큐로 감 */
+#define QUEUE_LEN_BATTERY_DATA 5
+#define QUEUE_LEN_FAULT_STATE 1
+#define QUEUE_LEN_SYSTEM_STATE 1
+#define QUEUE_LEN_RELAY_COMMAND 1
+
+static void prvCreateQueues(void) {
+    xQueueBatteryData = xQueueCreate(QUEUE_LEN_BATTERY_DATA, sizeof(BatteryData_t));
+    xQueueFaultState = xQueueCreate(QUEUE_LEN_FAULT_STATE, sizeof(FaultState_t));
+    xQueueSystemState = xQueueCreate(QUEUE_LEN_SYSTEM_STATE, sizeof(SystemState_t));
+    xQueueRelayCommand = xQueueCreate(QUEUE_LEN_RELAY_COMMAND, sizeof(RelayCommand_t));
+
+    /* 큐 생성 실패(힙 부족) 시 configASSERT로 즉시 정지 */
+    configASSERT(xQueueBatteryData);
+    configASSERT(xQueueFaultState);
+    configASSERT(xQueueSystemState);
+    configASSERT(xQueueRelayCommand);
+}
+
 int main(void)
 {
+    prvCreateQueues();
+    
     /* BMS 태스크 6개에 대한 xTaskCreate() 호출 위치. */
 
     vTaskStartScheduler();
