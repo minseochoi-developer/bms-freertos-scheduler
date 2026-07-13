@@ -49,6 +49,7 @@ add_executable(bms_scheduler
     src/tasks/battery_sim.c
     src/tasks/fault_diag.c
     src/tasks/state_machine.c
+    src/tasks/relay_decision.c
 )
 
 target_include_directories(bms_scheduler PRIVATE

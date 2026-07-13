@@ -12,8 +12,8 @@
 void vBatteryMeasTask(void *pvParameters);
 void vFaultDiagTask(void *pvParameters);
 void vStateMachineTask(void *pvParameters);
-/*
 void vRelayDecisionTask(void *pvParameters);
+/*
 void vCANTxTask(void *pvParameters);
 void vSysMonitorTask(void *pvParameters);
 */
@@ -44,6 +44,7 @@ int main(void)
     xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 3, NULL);
     xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 1, NULL);
     xTaskCreate(vStateMachineTask, "StateMachine", 256, NULL, 2, NULL);
+    xTaskCreate(vRelayDecisionTask, "RelayDecision", 256, NULL, 4, NULL);
 
     vTaskStartScheduler();
 
