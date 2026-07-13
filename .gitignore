@@ -1,7 +1,22 @@
+# 빌드 산출물
 build/
 *.o
 *.obj
 *.out
 *.bin
+*.elf
 *.map
+*.d
+ 
+# macOS
 .DS_Store
+ 
+# 에디터
+.vscode/
+.idea/
+*.swp
+ 
+# CMake
+CMakeCache.txt
+CMakeFiles/
+ 
