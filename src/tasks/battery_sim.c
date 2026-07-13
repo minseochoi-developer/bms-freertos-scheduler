@@ -42,20 +42,20 @@ void BMS_SimReadBatteryData(BatteryData_t *pxOut)
         pxOut->cell_voltage_mv[i] = (uint16_t)voltage;
     }
 
-    int32_t Current = (ulCycle < 10000u) ? -(int32_t)(PACK_CURRENT_NORMAL_MAX_MA * 8 / 10) : (int32_t)(PACK_CURRENT_NORMAL_MAX_MA * 5 / 10);
-    Current += (int32_t)(prvNextRandom() % 101u) - 50;
-    if ((prvNextRandom() % 100u) == 0u) {
+    int32_t current = (ulCycle < 10000u) ? -(int32_t)(PACK_CURRENT_NORMAL_MAX_MA * 8 / 10) : (int32_t)(PACK_CURRENT_NORMAL_MAX_MA * 5 / 10);
+    current += (int32_t)(prvNextRand() % 101u) - 50;
+    if ((prvNextRand() % 100u) == 0u) {
         int32_t sign = (ulCycle < 10000u) ? -1 : 1;
-        Current = sign * (PACK_CURRENT_FAULT_MAX_MA + 200);
+        current = sign * (PACK_CURRENT_FAULT_MAX_MA + 200);
     }
-    pxOut->pack_current_ma = (int16_t) lCurrent;
+    pxOut->pack_current_ma = (int16_t) current;
 
     int32_t temp = TEMPERATURE_NORMAL_MIN_C10 + (int32_t)((TEMPERATURE_NORMAL_MAX_C10 - TEMPERATURE_NORMAL_MIN_C10) * ulCycle / 20000u);
-    temp += (int32_t)(prvNextRandom() % 21u) - 10;
+    temp += (int32_t)(prvNextRand() % 21u) - 10;
 
-    if ((prvNextRandom() % 200u) == 0u) {
+    if ((prvNextRand() % 200u) == 0u) {
         temp = TEMPERATURE_FAULT_MAX_C10 + 20;
-    } else if ((prvNextRandom() % 200u) == 0u) {
+    } else if ((prvNextRand() % 200u) == 0u) {
         temp = TEMPERATURE_FAULT_MIN_C10 - 20;
     }
     pxOut->pack_temperature_c10 = (int16_t) temp;

@@ -9,8 +9,9 @@
 #include "queue.h"
 #include "bms_types.h"
 
-/*
+
 void vBatteryMeasTask(void *pvParameters);
+/*
 void vFaultDiagTask(void *pvParameters);
 void vStateMachineTask(void *pvParameters);
 void vRelayDecisionTask(void *pvParameters);
@@ -47,7 +48,7 @@ int main(void)
 {
     prvCreateQueues();
     
-    /* BMS 태스크 6개에 대한 xTaskCreate() 호출 위치. */
+    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 1, NULL);
 
     vTaskStartScheduler();
 
