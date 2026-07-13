@@ -47,6 +47,7 @@ add_executable(bms_scheduler
     src/startup_mps2_an385.c
     src/tasks/battery_measurement.c
     src/tasks/battery_sim.c
+    src/tasks/fault_diag.c
 )
 
 target_include_directories(bms_scheduler PRIVATE

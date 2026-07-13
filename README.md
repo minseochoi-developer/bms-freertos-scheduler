@@ -75,8 +75,8 @@ ninja -C build run
 - [x] 툴체인 / CMake 빌드 시스템
 - [x] 링커 스크립트 / startup 코드 (MPS2-AN385)
 - [x] FreeRTOS 커널 연동, 부팅 검증 완료
-- [x] 태스크 간 큐 설계 (bms_types.h)
-- [ ] BatteryMeas 태스크 구현 (진행 중)
+- [ ] 태스크 간 큐 설계 
+- [ ] BatteryMeas 태스크 구현
 - [ ] FaultDiag / StateMachine / RelayDecision / CANTx / SysMonitor 태스크 구현
 - [ ] 태스크 우선순위 확정 및 근거 문서화
 - [ ] WCET 측정 (DWT 사이클 카운터 기반)

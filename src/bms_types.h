@@ -40,7 +40,8 @@
 
 typedef struct {
     uint32_t timestamp_ms;
-    uint32_t flags;
+    uint32_t warn_flags;
+    uint32_t fault_flags;
 } FaultState_t;
 
 /* StateMachine -> RelayDecision, CANTx, SysMonitor */
