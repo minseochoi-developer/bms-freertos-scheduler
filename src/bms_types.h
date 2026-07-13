@@ -31,10 +31,11 @@
     FAULT_UNDER_VOLTAGE = (1 << 1),
     FAULT_OVER_CURRENT = (1 << 2),
     FAULT_OVER_TEMPERATURE = (1 << 3),
-    FAULT_CELL_IMBALANCE = (1 << 4),
-    FAULT_COMMUNICATION = (1 << 5),
-    FAULT_RELAY_FAILURE = (1 << 6),
-    FAULT_UNKNOWN = (1 << 7)
+    FAULT_UNDER_TEMPERATURE = (1 << 4),
+    FAULT_CELL_IMBALANCE = (1 << 5),
+    FAULT_COMMUNICATION = (1 << 6),
+    FAULT_RELAY_FAILURE = (1 << 7),
+    FAULT_UNKNOWN = (1 << 8)
 } FaultFlags_t;
 
 typedef struct {
