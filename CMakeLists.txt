@@ -45,11 +45,13 @@ target_include_directories(freertos_kernel PUBLIC
 add_executable(bms_scheduler
     src/main.c
     src/startup_mps2_an385.c
+    src/semihosting_io.c
     src/tasks/battery_measurement.c
     src/tasks/battery_sim.c
     src/tasks/fault_diag.c
     src/tasks/state_machine.c
     src/tasks/relay_decision.c
+    src/tasks/can_tx.c
 )
 
 target_include_directories(bms_scheduler PRIVATE

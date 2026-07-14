@@ -4,6 +4,7 @@
  * xTaskCreate 호출)은 src/tasks/의 각 태스크가 구현되는 순서대로 채워진다.
  */
 
+#include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -45,6 +46,8 @@ int main(void)
     xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 1, NULL);
     xTaskCreate(vStateMachineTask, "StateMachine", 256, NULL, 2, NULL);
     xTaskCreate(vRelayDecisionTask, "RelayDecision", 256, NULL, 4, NULL);
+
+    printf("semihosting test\n");
 
     vTaskStartScheduler();
 

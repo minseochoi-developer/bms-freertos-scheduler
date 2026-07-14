@@ -79,6 +79,13 @@ SECTIONS
         _ebss = .;
     } > RAM
 
+    /* newlib _sbrk()가 힙 시작 위치로 참조하는 심볼. FreeRTOS 자체는
+     * heap_4.c의 정적 배열을 쓰니 이 힙을 실제로 쓰진 않지만,
+     * printf 내부 malloc 경로가 이 심볼 존재를 요구함. */
+    . = ALIGN(4);
+    PROVIDE(end = .);
+    PROVIDE(_end = .);
+
     ._user_heap_stack :
     {
         . = ALIGN(8);
