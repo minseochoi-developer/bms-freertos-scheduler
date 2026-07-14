@@ -58,7 +58,7 @@ void vCANTxTask(void *pvParameters)
        (unsigned long)canFrameState.id, canFrameState.dlc,
        canFrameState.data[0], canFrameState.data[1], canFrameState.data[2]);
 
-       printf("[CAN] ID=0x%03lX DLC=%u DATA=%02X %02X\n",
+       printf("[CAN] ID=0x%03lX DLC=%u DATA=%02X %02X\n\n",
        (unsigned long)canFrameRelay.id, canFrameRelay.dlc,
        canFrameRelay.data[0], canFrameRelay.data[1]);
 

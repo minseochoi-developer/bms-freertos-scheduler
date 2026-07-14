@@ -9,21 +9,26 @@
 #include "task.h"
 #include "queue.h"
 #include "bms_types.h"
+#include "bms_tasks.h"
 
 void vBatteryMeasTask(void *pvParameters);
 void vFaultDiagTask(void *pvParameters);
 void vStateMachineTask(void *pvParameters);
 void vRelayDecisionTask(void *pvParameters);
 void vCANTxTask(void *pvParameters);
-/*
 void vSysMonitorTask(void *pvParameters);
-*/
 
 /* bms_types.h에서 extern으로 선언된 큐 핸들의 실제 정의 */
 QueueHandle_t xQueueBatteryData = NULL;
 QueueHandle_t xQueueFaultState = NULL;
 QueueHandle_t xQueueSystemState = NULL;
 QueueHandle_t xQueueRelayCommand = NULL;
+
+TaskHandle_t xHandleBatteryMeas = NULL;
+TaskHandle_t xHandleFaultDiag = NULL;
+TaskHandle_t xHandleStateMachine = NULL;
+TaskHandle_t xHandleRelayDecision = NULL;
+TaskHandle_t xHandleCANTx = NULL;
 
 static void prvCreateQueues(void) {
     xQueueBatteryData = xQueueCreate(QUEUE_LEN_BATTERY_DATA, sizeof(BatteryData_t));
@@ -50,12 +55,14 @@ int main(void)
     prvCreateQueues();
     printf("4: after queues\n");
 
-    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 3, NULL);
-    xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 1, NULL);
-    xTaskCreate(vStateMachineTask, "StateMachine", 256, NULL, 2, NULL);
-    xTaskCreate(vRelayDecisionTask, "RelayDecision", 256, NULL, 4, NULL);
-    xTaskCreate(vCANTxTask, "CanTx", 512, NULL, 0, NULL);
-    printf("5: after task create, free heap = %u\n", (unsigned) xPortGetFreeHeapSize());
+    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 1, &xHandleBatteryMeas);
+    xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 4, &xHandleFaultDiag);
+    xTaskCreate(vStateMachineTask, "StateMachine", 256, NULL, 3, &xHandleStateMachine);
+    xTaskCreate(vRelayDecisionTask, "RelayDecision", 256, NULL, 5, &xHandleRelayDecision);
+    xTaskCreate(vCANTxTask, "CanTx", 256, NULL, 2, &xHandleCANTx);
+    xTaskCreate(vSysMonitorTask, "sysMonitor", 256, NULL, 0, NULL);
+
+    printf("5: after task create, free heap = %u\n", (unsigned)xPortGetFreeHeapSize());
 
     vTaskStartScheduler();
     printf("6: scheduler returned (should never print)\n");

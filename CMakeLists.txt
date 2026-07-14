@@ -52,6 +52,7 @@ add_executable(bms_scheduler
     src/tasks/state_machine.c
     src/tasks/relay_decision.c
     src/tasks/can_tx.c
+    src/tasks/sys_monitor.c
 )
 
 target_include_directories(bms_scheduler PRIVATE
