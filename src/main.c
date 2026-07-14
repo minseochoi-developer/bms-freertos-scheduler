@@ -55,12 +55,12 @@ int main(void)
     prvCreateQueues();
     printf("4: after queues\n");
 
-    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 1, &xHandleBatteryMeas);
-    xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 4, &xHandleFaultDiag);
-    xTaskCreate(vStateMachineTask, "StateMachine", 256, NULL, 3, &xHandleStateMachine);
-    xTaskCreate(vRelayDecisionTask, "RelayDecision", 256, NULL, 5, &xHandleRelayDecision);
-    xTaskCreate(vCANTxTask, "CanTx", 256, NULL, 2, &xHandleCANTx);
-    xTaskCreate(vSysMonitorTask, "sysMonitor", 256, NULL, 0, NULL);
+    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 96, NULL, 1, &xHandleBatteryMeas);
+    xTaskCreate(vFaultDiagTask, "FaultDiag", 112, NULL, 4, &xHandleFaultDiag);
+    xTaskCreate(vStateMachineTask, "StateMachine", 80, NULL, 3, &xHandleStateMachine);
+    xTaskCreate(vRelayDecisionTask, "RelayDecision", 80, NULL, 5, &xHandleRelayDecision);
+    xTaskCreate(vCANTxTask, "CanTx", 176, NULL, 2, &xHandleCANTx);
+    xTaskCreate(vSysMonitorTask, "sysMonitor", 144, NULL, 0, NULL);
 
     printf("5: after task create, free heap = %u\n", (unsigned)xPortGetFreeHeapSize());
 
