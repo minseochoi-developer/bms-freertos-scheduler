@@ -29,12 +29,15 @@ void MemManage_Handler(void)  __attribute__((weak, alias("Default_Handler")));
 void BusFault_Handler(void)   __attribute__((weak, alias("Default_Handler")));
 void UsageFault_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
-/* FreeRTOS Cortex-M3 포트(port.c)가 이 세 개를 강한 심볼로 정의하므로,
- * 여기서는 약한 별칭만 두고 port.o가 링크에 포함되면 그 정의로 대체된다. */
-void SVC_Handler(void)   __attribute__((weak, alias("Default_Handler")));
+/* FreeRTOS Cortex-M3 포트(port.c)가 SVC/PendSV/SysTick 핸들러를
+ * vPortSVCHandler / xPortPendSVHandler / xPortSysTickHandler라는
+ * 자체 이름으로 강한 심볼로 정의함 (CMSIS 표준 이름 SVC_Handler 등이
+ * 아님 — nm으로 직접 확인해 정정한 부분). 벡터 테이블은 이 실제
+ * 이름을 가리켜야 하고, 여기서는 weak alias를 두지 않는다. */
+extern void vPortSVCHandler(void);
+extern void xPortPendSVHandler(void);
+extern void xPortSysTickHandler(void);
 void DebugMon_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
 /* CMSDK/AN385 외부 인터럽트 (IRQ0~31), 현재 미사용. */
 void IRQ0_Handler(void)  __attribute__((weak, alias("Default_Handler")));
@@ -82,11 +85,11 @@ const vector_entry_t vector_table[] = {
     BusFault_Handler,             /* 5  */
     UsageFault_Handler,           /* 6  */
     0, 0, 0, 0,                   /* 7-10 예약 */
-    SVC_Handler,                  /* 11 */
+    vPortSVCHandler,               /* 11 */
     DebugMon_Handler,             /* 12 */
     0,                             /* 13 예약 */
-    PendSV_Handler,               /* 14 */
-    SysTick_Handler,              /* 15 */
+    xPortPendSVHandler,            /* 14 */
+    xPortSysTickHandler,           /* 15 */
     IRQ0_Handler,  IRQ1_Handler,  IRQ2_Handler,  IRQ3_Handler,
     IRQ4_Handler,  IRQ5_Handler,  IRQ6_Handler,  IRQ7_Handler,
     IRQ8_Handler,  IRQ9_Handler,  IRQ10_Handler, IRQ11_Handler,

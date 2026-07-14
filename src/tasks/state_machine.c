@@ -10,6 +10,7 @@
  * 구현하고, 리셋 경로는 별도로 다룰 것.
  */
 
+#include <stdio.h>
 #include <stdbool.h>
 #include "FreeRTOS.h"
 #include "task.h"
@@ -18,6 +19,7 @@
 
 void vStateMachineTask(void *pvParameters)
 {
+    printf("StateMachine tick\n");
     (void) pvParameters;
 
     /* 래치 상태는 태스크 지역에 유지 (다른 태스크가 직접 건드릴 필요 없음). */

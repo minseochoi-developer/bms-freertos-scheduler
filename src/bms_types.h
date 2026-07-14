@@ -41,13 +41,12 @@
     FAULT_CELL_IMBALANCE = (1 << 5),
     FAULT_COMMUNICATION = (1 << 6),
     FAULT_RELAY_FAILURE = (1 << 7),
-    FAULT_UNKNOWN = (1 << 8)
 } FaultFlags_t;
 
 typedef struct {
     uint32_t timestamp_ms;
-    uint32_t warn_flags;
-    uint32_t fault_flags;
+    uint8_t warn_flags;
+    uint8_t fault_flags;
 } FaultState_t;
 
 /* StateMachine -> RelayDecision, CANTx, SysMonitor */
@@ -62,8 +61,8 @@ typedef enum {
 typedef struct {
     uint32_t timestamp_ms;
     BMSState_t state;
-    uint32_t warn_flags;
-    uint32_t fault_flags;
+    uint8_t warn_flags;
+    uint8_t fault_flags;
 } SystemState_t;
 
 /* RelayDecision -> CANTx */

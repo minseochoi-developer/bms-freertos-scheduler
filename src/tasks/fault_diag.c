@@ -4,6 +4,7 @@
  * 기준으로 이상 여부를 판단하고, 결과를 xQueueFaultState로 전달.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
@@ -16,6 +17,7 @@
 
 void vFaultDiagTask(void *pvParameters)
 {
+    printf("FaultDiag tick\n");
     (void) pvParameters;
 
     /* 최근 5개의 배터리 데이터를 저장할 버퍼 */

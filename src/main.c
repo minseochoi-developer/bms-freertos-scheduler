@@ -14,8 +14,8 @@ void vBatteryMeasTask(void *pvParameters);
 void vFaultDiagTask(void *pvParameters);
 void vStateMachineTask(void *pvParameters);
 void vRelayDecisionTask(void *pvParameters);
-/*
 void vCANTxTask(void *pvParameters);
+/*
 void vSysMonitorTask(void *pvParameters);
 */
 
@@ -40,16 +40,25 @@ static void prvCreateQueues(void) {
 
 int main(void)
 {
+    printf("1: main start\n");
+
+    setvbuf(stdout, NULL, _IONBF, 0);
+    printf("2: after setvbuf\n");
+
+    printf("3: after mutex create\n");
+
     prvCreateQueues();
-    
+    printf("4: after queues\n");
+
     xTaskCreate(vBatteryMeasTask, "BatteryMeas", 256, NULL, 3, NULL);
     xTaskCreate(vFaultDiagTask, "FaultDiag", 256, NULL, 1, NULL);
     xTaskCreate(vStateMachineTask, "StateMachine", 256, NULL, 2, NULL);
     xTaskCreate(vRelayDecisionTask, "RelayDecision", 256, NULL, 4, NULL);
-
-    printf("semihosting test\n");
+    xTaskCreate(vCANTxTask, "CanTx", 512, NULL, 0, NULL);
+    printf("5: after task create, free heap = %u\n", (unsigned) xPortGetFreeHeapSize());
 
     vTaskStartScheduler();
+    printf("6: scheduler returned (should never print)\n");
 
     /* 스케줄러 시작에 실패한 경우에만 도달 (예: idle/timer 태스크
      * 생성 전 힙 고갈). */
@@ -59,7 +68,7 @@ int main(void)
 }
 
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
-{
+{   
     (void) xTask;
     (void) pcTaskName;
     taskDISABLE_INTERRUPTS();

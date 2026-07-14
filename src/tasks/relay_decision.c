@@ -12,6 +12,7 @@
  * 직접 구현할 것.
  */
 
+#include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -27,6 +28,7 @@ typedef enum {
 
 void vRelayDecisionTask(void *pvParameters)
 {
+    printf("RelayDicision tick\n");
     (void) pvParameters;
 
     RelayInternalState_t eRelayState = RELAY_OPEN;

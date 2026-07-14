@@ -2,6 +2,7 @@
  *
  * 셀 전압/전류/온도를 주기적으로 측정해 xQueueBatteryData로 전달. */
 
+#include <stdio.h>
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
@@ -12,6 +13,7 @@
 
 void vBatteryMeasTask(void *pvParameters)
 {
+    printf("BatteryMeas tick\n");
     (void)pvParameters;
 
     BMS_SimInit();
