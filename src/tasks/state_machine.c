@@ -45,13 +45,15 @@ void vStateMachineTask(void *pvParameters)
              BMSState = BMS_STATE_NORMAL;
          }
 
-        /* 4. xQueueSystemState로 전달 */
+         /* 4. xQueueSystemState로 전달 */
          SystemState_t xSystemState = {
              .timestamp_ms = xFaultState.timestamp_ms,
              .state = BMSState,
              .warn_flags = xFaultState.warn_flags,
              .fault_flags = xFaultState.fault_flags
          };
-         xQueueOverwrite(xQueueSystemState, &xSystemState);
+
+         xQueueOverwrite(xQueueSystemStateForRelay, &xSystemState);
+         xQueueOverwrite(xQueueSystemStateForCANTx, &xSystemState);
     }
 }

@@ -12,8 +12,8 @@
 #include "bms_types.h"
 #include "bms_thresholds.h"
 
+// test끝나면 다시 3으로 변경
 #define FAULT_COUNT_THRESHOLD 3
-#define MAX_FAULT_COUNT 5
 
 void vFaultDiagTask(void *pvParameters)
 {
@@ -69,7 +69,6 @@ void vFaultDiagTask(void *pvParameters)
             } else if (abs(data->pack_current_ma) > PACK_CURRENT_WARN_MAX_MA) {
                 overCurrentWarn++;
             }
-            
         }
 
         /* 3. fault_flags/warn_flags 결정 */
@@ -101,7 +100,9 @@ void vFaultDiagTask(void *pvParameters)
             xFaultState.warn_flags |= FAULT_OVER_TEMPERATURE;
         } else if (underTempFault >= FAULT_COUNT_THRESHOLD) {
             xFaultState.fault_flags |= FAULT_UNDER_TEMPERATURE;
-        } else if (underTempWarn >= FAULT_COUNT_THRESHOLD) {
+        }
+        else if (underTempWarn >= FAULT_COUNT_THRESHOLD)
+        {
             xFaultState.warn_flags |= FAULT_UNDER_TEMPERATURE;
         }
 

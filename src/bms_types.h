@@ -75,7 +75,8 @@ typedef struct {
 /* --- queue handles --------------------------------------------------------------------------------- */
 extern QueueHandle_t xQueueBatteryData;
 extern QueueHandle_t xQueueFaultState;
-extern QueueHandle_t xQueueSystemState;
+extern QueueHandle_t xQueueSystemStateForRelay;
+extern QueueHandle_t xQueueSystemStateForCANTx;
 extern QueueHandle_t xQueueRelayCommand;
 
 #endif

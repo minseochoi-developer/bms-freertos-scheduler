@@ -24,22 +24,14 @@ void vCANTxTask(void *pvParameters)
     (void) pvParameters;
 
     /* 마지막으로 알려진 상태 — 큐에 새 값 없으면 이걸로 계속 전송. */
-    SystemState_t xLastSystemState = { .state = BMS_STATE_INIT };
+    SystemState_t xLastSystemState = { 0 };
     RelayCommand_t xLastRelayCommand = { 0 };
 
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
     for (;;) {
-        SystemState_t systemState;
-        RelayCommand_t relayCmd;
-
-        if (xQueueReceive(xQueueSystemState, &systemState, 0) == pdPASS) {
-            xLastSystemState = systemState;
-        }
-
-        if (xQueueReceive(xQueueRelayCommand, &relayCmd, 0) == pdPASS) {
-            xLastRelayCommand = relayCmd;
-        }
+        xQueueReceive(xQueueSystemStateForCANTx, &xLastSystemState, 0);
+        xQueueReceive(xQueueRelayCommand, &xLastRelayCommand, 0);
 
         CanFrame_t canFrameState = {.id = CAN_ID_SYSTEM_STATE,
                                .dlc = 3,

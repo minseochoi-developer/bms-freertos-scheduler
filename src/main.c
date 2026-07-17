@@ -21,7 +21,8 @@ void vSysMonitorTask(void *pvParameters);
 /* bms_types.h에서 extern으로 선언된 큐 핸들의 실제 정의 */
 QueueHandle_t xQueueBatteryData = NULL;
 QueueHandle_t xQueueFaultState = NULL;
-QueueHandle_t xQueueSystemState = NULL;
+QueueHandle_t xQueueSystemStateForRelay = NULL;
+QueueHandle_t xQueueSystemStateForCANTx = NULL;
 QueueHandle_t xQueueRelayCommand = NULL;
 
 TaskHandle_t xHandleBatteryMeas = NULL;
@@ -33,13 +34,15 @@ TaskHandle_t xHandleCANTx = NULL;
 static void prvCreateQueues(void) {
     xQueueBatteryData = xQueueCreate(QUEUE_LEN_BATTERY_DATA, sizeof(BatteryData_t));
     xQueueFaultState = xQueueCreate(QUEUE_LEN_FAULT_STATE, sizeof(FaultState_t));
-    xQueueSystemState = xQueueCreate(QUEUE_LEN_SYSTEM_STATE, sizeof(SystemState_t));
+    xQueueSystemStateForRelay = xQueueCreate(QUEUE_LEN_SYSTEM_STATE, sizeof(SystemState_t));
+    xQueueSystemStateForCANTx = xQueueCreate(QUEUE_LEN_SYSTEM_STATE, sizeof(SystemState_t));
     xQueueRelayCommand = xQueueCreate(QUEUE_LEN_RELAY_COMMAND, sizeof(RelayCommand_t));
 
     /* 큐 생성 실패(힙 부족) 시 configASSERT로 즉시 정지 */
     configASSERT(xQueueBatteryData);
     configASSERT(xQueueFaultState);
-    configASSERT(xQueueSystemState);
+    configASSERT(xQueueSystemStateForRelay);
+    configASSERT(xQueueSystemStateForCANTx);
     configASSERT(xQueueRelayCommand);
 }
 
@@ -55,11 +58,12 @@ int main(void)
     prvCreateQueues();
     printf("4: after queues\n");
 
-    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 96, NULL, 1, &xHandleBatteryMeas);
+    // stack 256 -> 실사용 20 ~ 30%
+    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 150, NULL, 1, &xHandleBatteryMeas);
     xTaskCreate(vFaultDiagTask, "FaultDiag", 112, NULL, 4, &xHandleFaultDiag);
     xTaskCreate(vStateMachineTask, "StateMachine", 80, NULL, 3, &xHandleStateMachine);
     xTaskCreate(vRelayDecisionTask, "RelayDecision", 80, NULL, 5, &xHandleRelayDecision);
-    xTaskCreate(vCANTxTask, "CanTx", 176, NULL, 2, &xHandleCANTx);
+    xTaskCreate(vCANTxTask, "CanTx", 153, NULL, 2, &xHandleCANTx);
     xTaskCreate(vSysMonitorTask, "sysMonitor", 144, NULL, 0, NULL);
 
     printf("5: after task create, free heap = %u\n", (unsigned)xPortGetFreeHeapSize());
@@ -75,9 +79,10 @@ int main(void)
 }
 
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
-{   
+{  
     (void) xTask;
     (void) pcTaskName;
+    printf("STACK OVERFLOW: %s\n", pcTaskName);
     taskDISABLE_INTERRUPTS();
     for (;;) {
         __asm volatile ("nop");

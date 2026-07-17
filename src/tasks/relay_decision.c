@@ -36,19 +36,8 @@ void vRelayDecisionTask(void *pvParameters)
 
     for (;;) {
         SystemState_t xSystemState;
-        xQueueReceive(xQueueSystemState, &xSystemState, portMAX_DELAY);
+        xQueueReceive(xQueueSystemStateForRelay, &xSystemState, portMAX_DELAY);
 
-        /* 1. xSystemState.state == BMS_STATE_FAULT 이면 eRelayState를
-         *    무조건 RELAY_OPEN으로 (다른 상태에 있었든 상관없이 강제)
-         * 2. 그 외 상태(NORMAL/WARNING)에서:
-         *    - eRelayState가 RELAY_OPEN이면 RELAY_PRECHARGE로 전이,
-         *      이때 xPrechargeStartTick = xTaskGetTickCount()로 기록
-         *    - eRelayState가 RELAY_PRECHARGE면 경과시간
-         *      (xTaskGetTickCount() - xPrechargeStartTick)이
-         *      PRECHARGE_DURATION_MS를 넘었는지 확인, 넘었으면
-         *      RELAY_CLOSED로 전이
-         *    - eRelayState가 RELAY_CLOSED면 유지
-         */
         if (xSystemState.state == BMS_STATE_FAULT) {
             eRelayState = RELAY_OPEN;
         } else if (eRelayState == RELAY_OPEN) {
@@ -58,11 +47,6 @@ void vRelayDecisionTask(void *pvParameters)
             eRelayState = RELAY_CLOSED;
         }
 
-        /* 
-         * 3. eRelayState를 RelayCommand_t(main_relay_on, precharge_relay_on)로
-         *    매핑 (RELAY_OPEN: 둘다 false / RELAY_PRECHARGE: precharge만
-         *    true / RELAY_CLOSED: main만 true)
-         */
         RelayCommand_t relayCmd = {
             .timestamp_ms = xSystemState.timestamp_ms,
         };
