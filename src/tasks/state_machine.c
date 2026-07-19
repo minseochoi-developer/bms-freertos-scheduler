@@ -16,6 +16,7 @@
 #include "task.h"
 #include "queue.h"
 #include "bms_types.h"
+#include "uart.h"
 
 void vStateMachineTask(void *pvParameters)
 {
@@ -29,7 +30,12 @@ void vStateMachineTask(void *pvParameters)
          /* 1. xQueueFaultState에서 xQueueReceive */
          FaultState_t xFaultState;
          xQueueReceive(xQueueFaultState, &xFaultState, portMAX_DELAY);
-        
+
+         uint8_t ucByte;
+         if (UART_TryReadByte(&ucByte)) {
+             bFaultLatched = false;
+         }
+            
         /* 2. fault_flags != 0 이면 bFaultLatched = true 로 래치 */
          if (xFaultState.fault_flags != 0) {
              bFaultLatched = true;

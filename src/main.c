@@ -10,6 +10,7 @@
 #include "queue.h"
 #include "bms_types.h"
 #include "bms_tasks.h"
+#include "uart.h"
 
 void vBatteryMeasTask(void *pvParameters);
 void vFaultDiagTask(void *pvParameters);
@@ -59,17 +60,18 @@ int main(void)
     printf("4: after queues\n");
 
     // stack 256 -> 실사용 20 ~ 30%
-    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 150, NULL, 1, &xHandleBatteryMeas);
-    xTaskCreate(vFaultDiagTask, "FaultDiag", 112, NULL, 4, &xHandleFaultDiag);
-    xTaskCreate(vStateMachineTask, "StateMachine", 80, NULL, 3, &xHandleStateMachine);
-    xTaskCreate(vRelayDecisionTask, "RelayDecision", 80, NULL, 5, &xHandleRelayDecision);
-    xTaskCreate(vCANTxTask, "CanTx", 153, NULL, 2, &xHandleCANTx);
-    xTaskCreate(vSysMonitorTask, "sysMonitor", 144, NULL, 0, NULL);
+    xTaskCreate(vBatteryMeasTask, "BatteryMeas", 70, NULL, 1, &xHandleBatteryMeas);
+    xTaskCreate(vFaultDiagTask, "FaultDiag", 110, NULL, 4, &xHandleFaultDiag);
+    xTaskCreate(vStateMachineTask, "StateMachine", 70, NULL, 3, &xHandleStateMachine);
+    xTaskCreate(vRelayDecisionTask, "RelayDecision", 70, NULL, 5, &xHandleRelayDecision);
+    xTaskCreate(vCANTxTask, "CanTx", 157, NULL, 2, &xHandleCANTx);
+    xTaskCreate(vSysMonitorTask, "sysMonitor", 136, NULL, 0, NULL);
 
     printf("5: after task create, free heap = %u\n", (unsigned)xPortGetFreeHeapSize());
 
+    UART_Init();
     vTaskStartScheduler();
-    printf("6: scheduler returned (should never print)\n");
+    printf("6: scheduler returned\n");
 
     /* 스케줄러 시작에 실패한 경우에만 도달 (예: idle/timer 태스크
      * 생성 전 힙 고갈). */

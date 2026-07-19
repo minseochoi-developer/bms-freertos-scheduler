@@ -32,10 +32,6 @@ void vBatteryMeasTask(void *pvParameters)
             xQueueSend(xQueueBatteryData, &xData, 0);
         }
 
-        printf("%d %d %d\n", xData.cell_voltage_mv[0], xData.cell_voltage_mv[1], xData.cell_voltage_mv[2]);
-        printf("%d %d %d\n", xData.cell_temperature_c10[0], xData.cell_temperature_c10[1], xData.cell_temperature_c10[2]);
-        printf("%d\n", xData.pack_current_ma);
-
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(BATTERY_MEAS_PERIOD_MS));
     }
 }
